@@ -1,0 +1,3 @@
+ grep"/home/emoora/Documents/programming/emu/*" emu_select.txt >> game_on.sh 
+ grep "/home/emoora/Downloads/*" game_select.txt >> game_on.sh
+

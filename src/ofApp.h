@@ -25,14 +25,15 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		void game_exe(string name);
+		void openChildApp();
 		vector<string> patternUpdate(string name);
 		vector<string> emuUpdate(vector<string> inf_res);
 		ofDirectory game_search, info_search, info_dir, emu_dir;
-		std::vector<string>data, info_result, emu_result, raw_emu_name, raw_info_name, emu_res;
+		std::vector<string>data, info_result, emu_result, raw_emu_name, raw_info_name, emu_res, emu_selection;
 		ofBuffer game_name_buffer;
 		ofFile base_Name;
 		string fileInfo,emu_info, game_selection, info_result2;
-		string pattern;
+		string pattern, shPath;
 		string emuInfo;
 		int currentFile, currentFile1, infoNum, emuNum, raw_emu_num, raw_info_num, unit = 0;
 		ifstream fin;

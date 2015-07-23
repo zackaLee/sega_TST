@@ -2,11 +2,12 @@
 	
 //--------------------------------------------------------------
 void ofApp::setup(){
+  ofSetWorkingDirectoryToDefault();
 
 	                           //Game search/sort
   //************************************************************//
-	game_search.listDir("/home/emoora/Downloads/");                            //<-----This is for games directory
-	game_search.allowExt("sh");
+	game_search.listDir("/home/mini/games/");                            //<-----This is for games directory
+	//game_search.allowExt("sh");
 	game_search.sort();
 	game_search.getFiles();
   	currentFile = 0;
@@ -20,7 +21,7 @@ void ofApp::setup(){
                             //.info Search/Sort
   	//*****************code to get list of files **************//
   	//ofDirectory ;
-  	info_dir.listDir("/home/emoora/Documents/programming/C++/info/");        //<----This is for .info directory
+  	info_dir.listDir("/usr/share/libretro/info/");        //<----This is for .info directory
     info_dir.sort();
   //	int numFiles = info_dir.listDir();
 	//*************************loop through files/open and each file in list******************/
@@ -60,10 +61,16 @@ void ofApp::setup(){
 
     /***************************Emulator search/sort*****************************************/
     /****************************************************************************************/
-    emu_dir.listDir("/home/emoora/Documents/programming/emu/"); //<---This is for emulator directory
+    emu_dir.listDir("/usr/lib/libretro/"); //<---This is for emulator directory
     emu_dir.sort();
 
+    ofSetDataPathRoot("/home/mini/programs/_sega/");
+    shPath = ofToDataPath("game.sh", true);
+    //-- Path to data
+
     
+
+
 
 
     /*int emuNum = emu_dir.size();
@@ -116,6 +123,32 @@ void ofApp::setup(){
 	
 	
 
+}
+//--------------------------------------------------------------
+void ofApp :: openChildApp(){
+
+
+
+  
+
+  char *shPathChar;
+  shPathChar = new char[ shPath.length() + 1 ];
+
+  strcpy(shPathChar, shPath.c_str() );
+  //--
+  int pid = fork();
+  cout<<"pid:: "<<pid<<endl;
+
+  switch(pid)
+  {
+    case -1:
+      cout<<"fork() no work.\n"<<endl;
+    case 0:
+      execl(shPathChar, shPathChar, NULL);
+    default:
+
+      return;
+  }  
 }
 
 //--------------------------------------------------------------
@@ -222,7 +255,7 @@ vector<string> ofApp::emuUpdate(vector<string> inf_res){
 }
 //--------------------------------------------------------------
 void ofApp::update(){
-	
+	 
 }
 
 //--------------------------------------------------------------
@@ -301,10 +334,14 @@ void ofApp::keyPressed(int key){
       //reads string path to selected file to in games search to a .txt file
       //--->will need to setup bash script to copy
       //------------------------------------------------------
-      game_selection = game_search.getPath(currentFile);
+      game_selection = '"' + game_search.getName(currentFile) + '"';
       ofBuffer msg(game_selection.c_str(), game_selection.length());
+      ofFile gameName(ofToDataPath("game_select.txt"), ofFile::WriteOnly);
+      gameName.create();
       ofBufferToFile("game_select.txt", msg);
-      ofLogVerbose("written out first time");
+      msg.clear();
+      gameName.close();
+      ofLogVerbose("written out and closed first time");
       unit = 2;
     }
     break;
@@ -321,16 +358,27 @@ void ofApp::keyPressed(int key){
       currentFile1 %= emu_res.size();
     }
     else if(key == OF_KEY_RETURN && emu_res.size() > 0){
-       vector<string>emu_selection;
        emu_selection.push_back(emu_res[currentFile1]);
        
+       ofFile emuName(ofToDataPath("emu_select.txt"), ofFile::WriteOnly);
+       emuName.create();
        ofLogVerbose("file opened");
+
        ofBuffer msg(emu_res[currentFile1]);
        ofBufferToFile("emu_select.txt", msg);
-       ofLogVerbose("Written to out,second Tiem!");
+       msg.clear();
+       emuName.close();
+       ofLogVerbose("Written to out and closed ,second Tiem!");
+       unit = 3;
        /* Work on opening file here and putting emu_selection into it */
     }
     break;
+    case 3:
+
+    if(key == OF_KEY_RETURN && emu_res.size() > 0)
+    {
+      openChildApp();
+    }
   }//end of switch 
 }
     /* clean up and work out back buttons */

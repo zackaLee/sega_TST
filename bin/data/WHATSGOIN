@@ -1,0 +1,11 @@
+///----------------------From this point-----------------------//
+I can get OF to run a bash script but any other files that need to be interacted with need to be in 'bin'
+folder because it reads bin folder for some reason.
+
+from here---
+work out how to get .txt files created in OF into 'bin' instead of 'data'
+something like change root directory or path when OF is running---this seems to be causing trouble
+
+else
+files are running well enough,
+remember to cd into /games directory before running ./game_on.sh
